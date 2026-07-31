@@ -54,7 +54,7 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="text-xs font-medium text-slate-400">Herzfrequenz (EKG) [50-59 ideal]</label>
+            <label class="text-xs font-medium text-slate-400">Herzfrequenz (EKG)</label>
             <input type="number" id="m-ruhepuls" value="58" onchange="calculateMorgen()" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-xl text-center text-lg font-bold text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500">
           </div>
           <div>
@@ -137,11 +137,11 @@
         <div class="grid grid-cols-3 gap-2">
           <div>
             <label class="text-[10px] font-medium text-slate-400">Ruhepuls Prozent (%)</label>
-            <input type="number" id="a-ruhepuls" value="28" onchange="calculateAbend()" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-xl text-center font-bold text-slate-100">
+            <input type="number" id="a-ruhepuls" value="30" onchange="calculateAbend()" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-xl text-center font-bold text-slate-100">
           </div>
           <div>
             <label class="text-[10px] font-medium text-slate-400">Puls erhöht (%)</label>
-            <input type="number" id="a-hrv" value="18" onchange="calculateAbend()" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-xl text-center font-bold text-slate-100">
+            <input type="number" id="a-hrv" value="20" onchange="calculateAbend()" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-xl text-center font-bold text-slate-100">
           </div>
           <div>
             <label class="text-[10px] font-medium text-slate-400">Heart Rate Recov. (0-5)</label>
@@ -551,12 +551,12 @@
       const pulsbewertung = parseFloat(document.getElementById('a-pulsbewertung').value) || 0;
       const abendCrash = parseFloat(document.getElementById('a-crash').value) || 0;
 
-      // 1. Ruhepuls Prozent: Pro Prozent unter config.abend.rpSoll (Standard 30%) -> 1 Punkt Abzug
+      // 1. Ruhepuls Prozent: Pro Prozent unter config.abend.rpSoll (Standard 30) -> 1 Punkt Abzug
       const rpThreshold = config.abend.rpSoll;
       const rpAbzug = rpPct < rpThreshold ? (rpThreshold - rpPct) : 0;
       const scoreRp = Math.max(0, 100 - rpAbzug);
 
-      // 2. Puls erhöht: Pro Prozent über config.abend.hrvSoll (Standard 20%) -> 1 Punkt Abzug
+      // 2. Puls erhöht: Pro Prozent über config.abend.hrvSoll (Standard 20) -> 1 Punkt Abzug
       const hrvThreshold = config.abend.hrvSoll;
       const hrvAbzug = hrvPct > hrvThreshold ? (hrvPct - hrvThreshold) : 0;
       const scoreHrv = Math.max(0, 100 - hrvAbzug);
