@@ -54,7 +54,7 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="text-xs font-medium text-slate-400">Herzfrequenz (EKG)</label>
+            <label class="text-xs font-medium text-slate-400">Herzfrequenz (EKG) [50-59 ideal]</label>
             <input type="number" id="m-ruhepuls" value="58" onchange="calculateMorgen()" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-xl text-center text-lg font-bold text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500">
           </div>
           <div>
@@ -508,17 +508,19 @@
       return `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-800">🟢 ${score.toFixed(1)}</span>`;
     }
 
-    function calculateMorgen() {
+   function calculateMorgen() {
       saveInputsToLocalStorage();
       const rpInput = document.getElementById('m-ruhepuls').value;
       const hrv = parseFloat(document.getElementById('m-hrv').value) || config.morgen.hrvSoll;
       const schlaf = parseFloat(document.getElementById('m-schlaf').value) || 8;
 
-      // Hier wird deine neue Puls-Abweichung (Range 50-59 = 0 Abweichung) in die Berechnung eingebaut:
       const abweichungPuls = berechnePulsAbweichung(rpInput);
       const scoreRp = 100 - Math.abs(abweichungPuls);
 
-      const scoreHrv = 100 - Math.abs(hrv - config.morgen.hrvSoll);
+      // NEU: Keine Strafpunkte mehr, wenn HRV >= Sollwert (40)
+      const hrvAbweichung = hrv >= config.morgen.hrvSoll ? 0 : config.morgen.hrvSoll - hrv;
+      const scoreHrv = 100 - hrvAbweichung;
+
       const scoreSchlaf = schlaf * 10;
 
       const baseline = (scoreRp * config.morgen.wRp) + (scoreHrv * config.morgen.wHrv) + (scoreSchlaf * config.morgen.wSchlaf);
@@ -533,8 +535,8 @@
       const budget = Math.max(0, baseline + abzug);
       document.getElementById('morgen-score-badge').innerHTML = getScoreBadgeHtml(budget);
       return budget;
-    }
-
+    }  
+    
     function saveMorgen() {
       const budget = calculateMorgen();
       const dateStr = new Date().toISOString().split('T')[0];
